@@ -1,0 +1,14 @@
+node_modules
+.pnpm-store
+.next
+out
+.vercel
+.vercel-cli-home
+.vercel-cli-cache
+.vercel-pnpm-home
+outputs
+.env*.local
+*.log
+tsconfig.tsbuildinfo
+*.zip
+.env*

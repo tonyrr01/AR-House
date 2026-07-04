@@ -1,0 +1,10 @@
+.next
+.pnpm-store
+node_modules
+outputs
+.vercel-cli-home
+.vercel-cli-cache
+.vercel-pnpm-home
+scripts/build-database-workbook.mjs
+scripts/inspect-shared-database-workbook.mjs
+*.log
