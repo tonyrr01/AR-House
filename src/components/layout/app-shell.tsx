@@ -9,8 +9,7 @@ import {
   Shirt,
   Sparkles,
   Settings2,
-  WashingMachine,
-  Wrench
+  WashingMachine
 } from "lucide-react";
 import Link from "next/link";
 import { signOutAction } from "@/app/login/actions";
@@ -27,7 +26,6 @@ const navItems = [
   { href: "/lavanderia", label: "Lavanderia y Bodega", icon: WashingMachine },
   { href: "/mantenimiento", label: "Mantenimiento y Activos", icon: Settings2 },
   { href: "/danos-faltantes", label: "Danos y faltantes", icon: AlertTriangle },
-  { href: "/tickets", label: "Tickets", icon: Wrench },
   { href: "/reportes/limpieza", label: "Reporte", icon: BarChart3 }
 ];
 
@@ -44,12 +42,12 @@ export function AppShell({
 }) {
   return (
     <div className="min-h-screen bg-[#f6f8f7]">
-      <aside className="fixed inset-y-0 left-0 hidden w-72 border-r border-slate-200 bg-white px-4 py-6 lg:block">
+      <aside className="fixed inset-y-0 left-0 hidden w-72 overflow-y-auto border-r border-slate-200 bg-white px-4 py-6 lg:block">
         <Link href="/" className="mb-8 block rounded-md px-3">
           <p className="text-xs font-bold uppercase tracking-[0.16em] text-sea">Operacion premium</p>
           <h1 className="mt-2 text-2xl font-bold leading-tight text-ink">Housekeeping 5 Estrellas</h1>
         </Link>
-        <nav className="space-y-2">
+        <nav className="space-y-1.5">
           {navItems.map((item) => (
             <Link
               key={item.href}

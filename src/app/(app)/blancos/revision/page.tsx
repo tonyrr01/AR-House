@@ -106,7 +106,7 @@ export default function LinenReviewPage() {
             <h2 className="text-xl font-bold text-ink">Resumen</h2>
             <div className="mt-5 grid gap-3">
               <SummaryLine icon={<CheckCircle2 className="h-5 w-5" />} label="Articulos revisados" value={reviewItems.length} />
-              <SummaryLine icon={<TriangleAlert className="h-5 w-5" />} label="Incidencias mock" value={reviewItems.filter((item) => item.requiereReposicion).length} />
+              <SummaryLine icon={<TriangleAlert className="h-5 w-5" />} label="Incidencias" value={reviewItems.filter((item) => item.requiereReposicion).length} />
               <SummaryLine icon={<CircleDollarSign className="h-5 w-5" />} label="Costo estimado" value={money.format(estimatedCost)} />
               <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm font-semibold text-amber-900">
                 Si hay faltante, roto, manchado no recuperable, baja o cargo sugerido, se sugiere crear dano/faltante con foto.

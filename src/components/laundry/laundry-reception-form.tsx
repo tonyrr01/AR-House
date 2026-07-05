@@ -86,7 +86,7 @@ export function LaundryReceptionForm({
           <div className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-900">
             {isConnectedToSupabase
               ? "Este formulario ya guarda el lote y las cantidades en Supabase. Las fotos se conectan en el siguiente paso."
-              : "Modo demo: necesitas iniciar sesion o tener permisos para guardar en Supabase."}
+              : "Vista de respaldo: inicia sesion o revisa permisos para guardar en Supabase."}
           </div>
         </div>
 
@@ -96,7 +96,7 @@ export function LaundryReceptionForm({
         </Button>
         <p className="flex items-center gap-2 text-sm font-semibold text-slate-500">
           <Camera className="h-4 w-4" />
-          Futuro: guardar fotos en Supabase Storage y asociarlas al lote.
+          Pendiente: guardar fotos en Supabase Storage y asociarlas al lote.
         </p>
       </form>
     </Card>

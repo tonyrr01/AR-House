@@ -96,7 +96,7 @@ export default async function CleaningDetailPage({ params }: { params: Promise<{
               </div>
             </div>
             <p className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm font-semibold text-amber-900">
-              Mock: abrira mantenimiento con departamento, limpieza relacionada, area, categoria, descripcion, prioridad, foto y costo estimado.
+              Abre mantenimiento con la limpieza como origen para registrar el hallazgo con prioridad, costo y evidencia.
             </p>
             <ButtonLink href={`/mantenimiento?sourceModule=limpieza&sourceId=${cleaning.id}#tickets`} variant="secondary" className="mt-5 w-full sm:w-auto">
               <Wrench className="h-5 w-5" />
@@ -121,7 +121,7 @@ export default async function CleaningDetailPage({ params }: { params: Promise<{
               </div>
             </div>
             <p className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm font-semibold text-amber-900">
-              Mock: esta accion creara un LaundryBatch con departamento, limpieza, fecha, responsable y piezas estimadas.
+              Preparado para crear un lote con departamento, limpieza, fecha, responsable y piezas estimadas.
             </p>
             <Button type="button" variant="secondary" className="mt-5 w-full sm:w-auto">
               <WashingMachine className="h-5 w-5" />

@@ -33,16 +33,25 @@ Usar:
 - propietario: consulta reportes de sus unidades.
 - administrador_cliente: consulta unidades asignadas y reportes.
 
-## Módulos iniciales
+## Módulos actuales del MVP
 1. Dashboard.
 2. Departamentos.
 3. Limpiezas.
 4. Nueva limpieza.
 5. Checklist.
 6. Inventario.
-7. Daños y faltantes.
-8. Tickets de mantenimiento.
-9. Reporte simple por limpieza.
+7. Blancos.
+8. Lavandería y Bodega.
+9. Daños y faltantes.
+10. Mantenimiento y Activos.
+11. Tickets de mantenimiento.
+12. Reporte simple por limpieza.
+
+## Módulos conectados parcialmente a Supabase
+- Lavandería y Bodega: lectura/creación de lotes y movimientos con respaldo de datos demo.
+- Mantenimiento y Activos: tickets, órdenes, preventivos, activos, refacciones, técnicos, costos y evidencias con respaldo de datos demo.
+
+Mantener los datos demo organizados como respaldo visual mientras cada módulo se conecta completamente a Supabase.
 
 ## Flujo principal
 El personal de limpieza debe poder:
@@ -91,7 +100,7 @@ No implementar en la primera versión:
 - Facturación.
 - IA avanzada.
 - App nativa iOS/Android.
-- Lavandería avanzada.
+- Automatización avanzada de lavandería.
 - Reposición automática de blancos.
 - Módulo financiero complejo.
 

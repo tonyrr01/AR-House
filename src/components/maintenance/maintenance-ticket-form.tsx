@@ -3,23 +3,27 @@ import { createMaintenanceTicketAction } from "@/app/(app)/mantenimiento/actions
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Field, Input, Select, Textarea } from "@/components/ui/field";
-import { maintenanceDepartments, technicians } from "@/lib/demo-data";
-import type { Apartment } from "@/types";
+import { maintenanceDepartments, technicians as demoTechnicians } from "@/lib/demo-data";
+import type { Apartment, Technician } from "@/types";
 
 export function MaintenanceTicketForm({
   apartments,
+  technicians,
   sourceModule = "manual",
   sourceId
 }: {
   apartments?: Pick<Apartment, "id" | "name" | "code" | "address">[];
+  technicians?: Technician[];
   sourceModule?: string;
   sourceId?: string;
 }) {
   const propertyOptions = apartments?.length ? apartments : maintenanceDepartments;
+  const technicianOptions = technicians?.length ? technicians : demoTechnicians;
+  const specialties = [...new Set(technicianOptions.map((tech) => tech.specialty))];
 
   return (
     <Card>
-      <CardTitle title="Crear ticket manual" description="Guarda tickets reales en Supabase cuando hay sesion y permisos." />
+      <CardTitle title="Crear ticket" description="Guarda el hallazgo en Supabase con prioridad, costo y evidencia." />
       <form action={createMaintenanceTicketAction} className="grid gap-4">
         <input type="hidden" name="source_module" value={sourceModule} />
         {sourceId ? <input type="hidden" name="source_id" value={sourceId} /> : null}
@@ -83,8 +87,8 @@ export function MaintenanceTicketForm({
           </Field>
           <Field label="Especialidad">
             <Select name="assigned_specialty" defaultValue="Tecnico general">
-              {technicians.map((tech) => (
-                <option key={tech.id}>{tech.specialty}</option>
+              {specialties.map((specialty) => (
+                <option key={specialty}>{specialty}</option>
               ))}
             </Select>
           </Field>
@@ -108,7 +112,7 @@ export function MaintenanceTicketForm({
           Sugerir cargo al huesped
         </label>
         <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm font-semibold text-amber-900">
-          Validaciones mock: no crear sin departamento y descripcion. Si hay cargo al huesped, pedir foto y costo estimado.
+          Para sugerir cargo al huesped agrega costo estimado y evidencia.
         </div>
         <Button type="submit" className="w-full">
           <PlusCircle className="h-5 w-5" />
@@ -116,7 +120,7 @@ export function MaintenanceTicketForm({
         </Button>
         <p className="flex items-center gap-2 text-sm font-semibold text-slate-500">
           <Camera className="h-4 w-4" />
-          Fotos se conectaran a Supabase Storage en la siguiente fase.
+          Las fotos se guardan en Supabase Storage como evidencia inicial.
         </p>
       </form>
     </Card>

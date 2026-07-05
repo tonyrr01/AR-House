@@ -14,7 +14,7 @@ const checklistAreas = [
 export function PreventiveChecklistForm() {
   return (
     <Card>
-      <CardTitle title="Checklist preventivo bimestral" description="Mock: no marcar completado sin checklist." />
+      <CardTitle title="Checklist preventivo bimestral" description="Revision base para mantenimiento mayor cada 2 meses." />
       <div className="grid gap-4">
         {checklistAreas.map(([area, items]) => (
           <section key={area as string} className="rounded-md border border-slate-200 bg-slate-50 p-4">

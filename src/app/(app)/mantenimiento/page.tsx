@@ -16,9 +16,29 @@ import { WorkOrderTable } from "@/components/maintenance/work-order-table";
 import { PageHeader } from "@/components/page-header";
 import { ButtonLink } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
-import { getMaintenanceReferenceData, getMaintenanceTickets } from "@/lib/maintenance/supabase-maintenance";
+import {
+  getMaintenanceCosts,
+  getMaintenanceReferenceData,
+  getMaintenanceTickets,
+  getPreventivePlans,
+  getPreventiveVisits,
+  getSpareParts,
+  getTechnicalAssets,
+  getTechnicians,
+  getWorkOrders
+} from "@/lib/maintenance/supabase-maintenance";
 import { createClient } from "@/lib/supabase/server";
-import type { Apartment, MaintenanceAssetTicket } from "@/types";
+import type {
+  Apartment,
+  MaintenanceAssetTicket,
+  MaintenanceCost,
+  PreventiveMaintenancePlan,
+  PreventiveMaintenanceVisit,
+  SparePart,
+  TechnicalAsset,
+  Technician,
+  WorkOrder
+} from "@/types";
 import {
   maintenanceAssetTickets,
   maintenanceCosts,
@@ -70,22 +90,50 @@ export default async function MaintenancePage({
 
   let realTickets: MaintenanceAssetTicket[] = [];
   let realApartments: Pick<Apartment, "id" | "name" | "code" | "address">[] = [];
+  let realOrders: WorkOrder[] = [];
+  let realPreventivePlans: PreventiveMaintenancePlan[] = [];
+  let realPreventiveVisits: PreventiveMaintenanceVisit[] = [];
+  let realTechnicalAssets: TechnicalAsset[] = [];
+  let realSpareParts: SparePart[] = [];
+  let realTechnicians: Technician[] = [];
+  let realCosts: MaintenanceCost[] = [];
 
   try {
     const supabase = await createClient();
-    const [tickets, references] = await Promise.all([
+    const [tickets, references, orders, plans, visits, assets, parts, techs, costs] = await Promise.all([
       getMaintenanceTickets(supabase),
-      getMaintenanceReferenceData(supabase)
+      getMaintenanceReferenceData(supabase),
+      getWorkOrders(supabase),
+      getPreventivePlans(supabase),
+      getPreventiveVisits(supabase),
+      getTechnicalAssets(supabase),
+      getSpareParts(supabase),
+      getTechnicians(supabase),
+      getMaintenanceCosts(supabase)
     ]);
     realTickets = tickets;
     realApartments = references.apartments;
+    realOrders = orders;
+    realPreventivePlans = plans;
+    realPreventiveVisits = visits;
+    realTechnicalAssets = assets;
+    realSpareParts = parts;
+    realTechnicians = techs;
+    realCosts = costs;
   } catch {
     // Keep the module usable with mock data while Supabase is unavailable.
   }
 
   const tickets = realTickets.length ? realTickets : maintenanceAssetTickets;
+  const orders = realOrders.length ? realOrders : workOrders;
+  const plans = realPreventivePlans.length ? realPreventivePlans : preventiveMaintenancePlans;
+  const visits = realPreventiveVisits.length ? realPreventiveVisits : preventiveMaintenanceVisits;
+  const assets = realTechnicalAssets.length ? realTechnicalAssets : technicalAssets;
+  const parts = realSpareParts.length ? realSpareParts : spareParts;
+  const technicianList = realTechnicians.length ? realTechnicians : technicians;
+  const costs = realCosts.length ? realCosts : maintenanceCosts;
   const urgentTickets = tickets.filter((ticket) => ticket.priority === "Urgente");
-  const criticalParts = spareParts.filter((part) => part.status === "critico" || part.stockActual <= part.stockMinimo);
+  const criticalParts = parts.filter((part) => part.status === "critico" || part.stockActual <= part.stockMinimo);
 
   return (
     <>
@@ -117,10 +165,10 @@ export default async function MaintenancePage({
       <section id="dashboard">
         <MaintenanceDashboardCards
           tickets={tickets}
-          orders={workOrders}
-          preventives={preventiveMaintenancePlans}
-          spareParts={spareParts}
-          costs={maintenanceCosts}
+          orders={orders}
+          preventives={plans}
+          spareParts={parts}
+          costs={costs}
         />
       </section>
 
@@ -175,12 +223,13 @@ export default async function MaintenancePage({
       <section id="tickets" className="mt-6 grid gap-6 xl:grid-cols-[420px_1fr]">
         <MaintenanceTicketForm
           apartments={realApartments}
+          technicians={technicianList}
           sourceModule={String(params.sourceModule ?? "manual")}
           sourceId={typeof params.sourceId === "string" ? params.sourceId : undefined}
         />
         <Card className="p-0">
           <div className="border-b border-slate-200 p-5">
-            <CardTitle title="Tickets" description="Tabla con filtros mock por departamento, categoria, prioridad, estado y tecnico." />
+            <CardTitle title="Tickets" description="Seguimiento por departamento, categoria, prioridad, estado y tecnico." />
           </div>
           <MaintenanceTicketTable tickets={tickets} />
         </Card>
@@ -196,14 +245,14 @@ export default async function MaintenancePage({
       <section id="ordenes" className="mt-6">
         <Card>
           <CardTitle title="Ordenes de trabajo" description="Asignacion, diagnostico, materiales, costos, fotos y aprobacion." />
-          <WorkOrderTable orders={workOrders} />
+          <WorkOrderTable orders={orders} />
         </Card>
       </section>
 
       <section id="preventivos" className="mt-6 grid gap-6 xl:grid-cols-[1fr_420px]">
         <Card>
           <CardTitle title="Preventivos bimestrales" description="Cada departamento debe tener mantenimiento mayor cada 2 meses." />
-          <PreventiveMaintenanceCalendar plans={preventiveMaintenancePlans} visits={preventiveMaintenanceVisits} />
+          <PreventiveMaintenanceCalendar plans={plans} visits={visits} />
         </Card>
         <PreventiveChecklistForm />
       </section>
@@ -213,10 +262,10 @@ export default async function MaintenancePage({
           <div className="border-b border-slate-200 p-5">
             <CardTitle title="Inventario tecnico" description="Activos, acabados, equipos, garantias, manuales y refacciones compatibles." />
           </div>
-          <TechnicalAssetTable assets={technicalAssets} />
+          <TechnicalAssetTable assets={assets} />
         </Card>
         <div className="mt-4 grid gap-4 lg:grid-cols-2">
-          {technicalAssets.slice(0, 4).map((asset) => (
+          {assets.slice(0, 4).map((asset) => (
             <TechnicalAssetCard key={asset.id} asset={asset} />
           ))}
         </div>
@@ -227,32 +276,32 @@ export default async function MaintenancePage({
           <div className="border-b border-slate-200 p-5">
             <CardTitle title="Refacciones y materiales" description="Stock, minimo, proveedor, ubicacion, compatibilidad y alerta de stock bajo." />
           </div>
-          <SparePartsTable parts={spareParts} />
+          <SparePartsTable parts={parts} />
         </Card>
       </section>
 
       <section id="tecnicos" className="mt-6">
         <Card>
           <CardTitle title="Tecnicos" description="Catalogo por especialidad, interno/externo, tarifa, contacto y rating." />
-          <TechnicianTable technicians={technicians} />
+          <TechnicianTable technicians={technicianList} />
         </Card>
       </section>
 
       <section id="costos" className="mt-6">
-        <MaintenanceCostSummary costs={maintenanceCosts} />
+        <MaintenanceCostSummary costs={costs} />
       </section>
 
       <section id="reportes" className="mt-6">
         <Card>
           <CardTitle title="Reportes" description="Resumen por departamento con tickets, preventivos, costos y proximas acciones." />
           <div className="grid gap-4 lg:grid-cols-2">
-            {maintenanceDepartments.map((property) => (
+            {(realApartments.length ? realApartments : maintenanceDepartments).map((property) => (
               <MaintenanceReportCard
                 key={property.id}
                 propertyName={property.name}
                 tickets={tickets}
-                costs={maintenanceCosts}
-                visits={preventiveMaintenanceVisits}
+                costs={costs}
+                visits={visits}
               />
             ))}
           </div>

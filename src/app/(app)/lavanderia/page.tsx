@@ -167,7 +167,7 @@ export default async function LaundryPage({
           </div>
         </Card>
         <Card>
-          <CardTitle title="Escala operativa" description="Datos mock preparados para operar 50 habitaciones y crecer." />
+          <CardTitle title="Escala operativa" description="Base preparada para operar 50 habitaciones y crecer." />
           <div className="grid gap-3">
             <Metric label="Habitaciones iniciales" value={laundryRooms.length} />
             <Metric label="Objetivo siguiente" value="80-100" />
@@ -196,7 +196,7 @@ export default async function LaundryPage({
 
       <section className="mt-6">
         <Card>
-          <CardTitle title="Movimientos recientes" description="Trazabilidad mock de origen, destino, responsable y cambio de estado." />
+          <CardTitle title="Movimientos recientes" description="Trazabilidad de origen, destino, responsable y cambio de estado." />
           <div className="grid gap-3">
             {laundryMovements.map((movement) => (
               <div key={movement.id} className="grid gap-3 rounded-md bg-slate-50 p-4 lg:grid-cols-[1fr_180px_180px] lg:items-center">
@@ -287,7 +287,7 @@ export default async function LaundryPage({
             ))}
           </div>
           <p className="mt-4 rounded-md bg-mist p-3 text-sm font-semibold text-pine">
-            Mock: futura funcion syncLaundryStatusToLinenInventory(batchItem) actualizara Supabase.
+            Pendiente operativo: sincronizar cambios de lavanderia con el inventario de blancos.
           </p>
         </Card>
         <Card>

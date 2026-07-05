@@ -40,7 +40,7 @@ export function LinenKitBuilder() {
         </Field>
       </div>
       <div className="mt-5 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-900">
-        Validacion mock: no armar kit si el stock disponible no alcanza; no marcar entregado si esta incompleto salvo confirmacion explicita.
+        Validacion operativa: no armar kit si el stock disponible no alcanza; no marcar entregado si esta incompleto salvo confirmacion explicita.
       </div>
       <Button type="button" className="mt-5 w-full md:w-fit">
         <PackagePlus className="h-5 w-5" />
