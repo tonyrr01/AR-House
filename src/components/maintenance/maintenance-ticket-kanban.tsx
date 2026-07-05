@@ -3,15 +3,28 @@ import { MaintenancePriorityBadge, MaintenanceStatusBadge } from "@/components/m
 import { Button } from "@/components/ui/button";
 import type { MaintenanceAssetTicket, MaintenanceTicketStatus } from "@/types";
 
-const columns: MaintenanceTicketStatus[] = ["Abierto", "En revision", "Diagnostico", "Cotizacion", "Asignado", "En proceso", "En espera de material", "Supervision", "Cerrado"];
+const columns: MaintenanceTicketStatus[] = [
+  "Abierto",
+  "En revision",
+  "Diagnostico",
+  "Cotizacion",
+  "Aprobado",
+  "Asignado",
+  "En proceso",
+  "En espera de material",
+  "Terminado",
+  "Supervision",
+  "Cerrado",
+  "Cancelado"
+];
 
 export function MaintenanceTicketKanban({ tickets }: { tickets: MaintenanceAssetTicket[] }) {
   return (
-    <div className="grid gap-4 overflow-x-auto xl:grid-cols-3 2xl:grid-cols-5">
+    <div className="flex gap-4 overflow-x-auto pb-2">
       {columns.map((column) => {
         const columnTickets = tickets.filter((ticket) => ticket.status === column);
         return (
-          <section key={column} className="min-w-72 rounded-md border border-slate-200 bg-slate-50 p-3">
+          <section key={column} className="w-72 shrink-0 rounded-md border border-slate-200 bg-slate-50 p-3">
             <div className="mb-3 flex items-center justify-between gap-2">
               <MaintenanceStatusBadge status={column} />
               <span className="rounded-md bg-white px-2 py-1 text-xs font-bold text-slate-500">{columnTickets.length}</span>

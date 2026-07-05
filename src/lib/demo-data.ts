@@ -1214,10 +1214,10 @@ export const technicians: Technician[] = [
 ];
 
 export const maintenanceCosts: MaintenanceCost[] = [
-  { id: "mc-1", ticketId: "mnt-1001", workOrderId: "wo-1001", propertyId: "dep-101", propertyName: "Departamento 101", date: "2026-07-05", laborCost: 650, materialCost: 180, sparePartsCost: 180, externalServiceCost: 0, totalCost: 830, chargeTo: "operacion", businessUnit: "maintenance", notes: "En ejecucion." },
+  { id: "mc-1", ticketId: "mnt-1001", workOrderId: "wo-1001", propertyId: "dep-101", propertyName: "Departamento 101", date: "2026-07-05", laborCost: 650, materialCost: 180, sparePartsCost: 0, externalServiceCost: 0, totalCost: 830, chargeTo: "operacion", businessUnit: "maintenance", notes: "En ejecucion." },
   { id: "mc-2", ticketId: "mnt-1004", workOrderId: "wo-1002", propertyId: "dep-202", propertyName: "Departamento 202", date: "2026-07-06", laborCost: 900, materialCost: 500, sparePartsCost: 0, externalServiceCost: 0, totalCost: 1400, chargeTo: "huesped", businessUnit: "guest_charge", notes: "Cargo sugerido con evidencia." },
-  { id: "mc-3", ticketId: "mnt-1002", propertyId: "dep-102", propertyName: "Departamento 102", date: "2026-07-05", laborCost: 450, materialCost: 250, sparePartsCost: 250, externalServiceCost: 0, totalCost: 700, chargeTo: "propietario", businessUnit: "maintenance" },
-  { id: "mc-4", ticketId: "mnt-1008", propertyId: "dep-202", propertyName: "Departamento 202", date: "2026-07-02", laborCost: 0, materialCost: 0, sparePartsCost: 0, externalServiceCost: 0, totalCost: 2200, chargeTo: "preventivo", businessUnit: "preventive", notes: "Costo estimado derivado de preventivo." }
+  { id: "mc-3", ticketId: "mnt-1002", propertyId: "dep-102", propertyName: "Departamento 102", date: "2026-07-05", laborCost: 450, materialCost: 0, sparePartsCost: 250, externalServiceCost: 0, totalCost: 700, chargeTo: "propietario", businessUnit: "maintenance" },
+  { id: "mc-4", ticketId: "mnt-1008", propertyId: "dep-202", propertyName: "Departamento 202", date: "2026-07-02", laborCost: 0, materialCost: 0, sparePartsCost: 0, externalServiceCost: 2200, totalCost: 2200, chargeTo: "preventivo", businessUnit: "preventive", notes: "Costo estimado derivado de preventivo." }
 ];
 
 export const report: CleaningReport = {
