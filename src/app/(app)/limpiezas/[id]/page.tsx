@@ -1,4 +1,4 @@
-import { Camera, ClipboardCheck, PackageCheck, Send, Sparkles, TriangleAlert } from "lucide-react";
+import { Camera, ClipboardCheck, PackageCheck, Send, Sparkles, TriangleAlert, WashingMachine } from "lucide-react";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { Button, ButtonLink } from "@/components/ui/button";
@@ -78,6 +78,31 @@ export default async function CleaningDetailPage({ params }: { params: Promise<{
               </Button>
             </form>
           </Card>
+
+          <Card>
+            <CardTitle title="4. Enviar blancos a lavanderia" />
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="rounded-md bg-slate-50 p-4">
+                <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Estado lote</p>
+                <p className="mt-1 text-lg font-bold text-ink">Sucio recibido</p>
+              </div>
+              <div className="rounded-md bg-slate-50 p-4">
+                <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Piezas estimadas</p>
+                <p className="mt-1 text-lg font-bold text-ink">42</p>
+              </div>
+              <div className="rounded-md bg-slate-50 p-4">
+                <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Responsable</p>
+                <p className="mt-1 text-lg font-bold text-ink">{cleaning.assignedTo}</p>
+              </div>
+            </div>
+            <p className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm font-semibold text-amber-900">
+              Mock: esta accion creara un LaundryBatch con departamento, limpieza, fecha, responsable y piezas estimadas.
+            </p>
+            <Button type="button" variant="secondary" className="mt-5 w-full sm:w-auto">
+              <WashingMachine className="h-5 w-5" />
+              Enviar blancos a lavanderia
+            </Button>
+          </Card>
         </div>
 
         <Card className="h-fit">
@@ -94,6 +119,10 @@ export default async function CleaningDetailPage({ params }: { params: Promise<{
             <ButtonLink href="/danos-faltantes" variant="secondary" className="justify-start">
               <TriangleAlert className="h-5 w-5" />
               Dano o faltante
+            </ButtonLink>
+            <ButtonLink href="/lavanderia" variant="secondary" className="justify-start">
+              <WashingMachine className="h-5 w-5" />
+              Lavanderia y Bodega
             </ButtonLink>
             <ButtonLink href="/reportes/limpieza" variant="secondary" className="justify-start">
               Ver reporte

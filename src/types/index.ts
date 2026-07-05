@@ -51,6 +51,47 @@ export type LinenStatus =
 
 export type LinenLocation = "Departamento" | "Bodega" | "Lavanderia" | "En transito" | "Baja";
 
+export type LaundryStatus =
+  | "Instalado en unidad"
+  | "Sucio recibido"
+  | "En clasificacion"
+  | "En pretratamiento"
+  | "En lavado"
+  | "En secado"
+  | "En inspeccion"
+  | "Limpio aprobado"
+  | "Observado"
+  | "Manchado recuperable"
+  | "Manchado no recuperable"
+  | "Roto"
+  | "Percudido"
+  | "En bodega"
+  | "Kit armado"
+  | "En ruta"
+  | "Entregado a unidad"
+  | "Extraviado"
+  | "Baja"
+  | "Cargo sugerido al huesped";
+
+export type LaundryLocation =
+  | "Unidad/departamento"
+  | "Recepcion lavanderia"
+  | "Clasificacion"
+  | "Pretratamiento"
+  | "Lavadora"
+  | "Secadora"
+  | "Inspeccion"
+  | "Doblado"
+  | "Bodega limpia"
+  | "Bodega observados"
+  | "Bodega bajas"
+  | "En ruta"
+  | "Baja definitiva";
+
+export type KitType = "cama_queen" | "cama_king" | "bano" | "playa" | "cocina" | "completo_departamento";
+export type KitStatus = "pendiente" | "armado" | "en_ruta" | "entregado" | "incompleto";
+export type StockLevel = "suficiente" | "bajo" | "critico";
+
 export type LinenControlItem = {
   id: string;
   categoria: LinenCategory;
@@ -87,6 +128,123 @@ export type LinenDepartmentSummary = {
   enLavanderia: number;
   reposicionSugerida: number;
   costoEstimado: number;
+};
+
+export type LaundryBatch = {
+  id: string;
+  fechaRecepcion: string;
+  propertyId: string;
+  propertyName: string;
+  cleaningId?: string;
+  responsableRecepcion: string;
+  pesoKg: number;
+  piezasRecibidas: number;
+  estado: LaundryStatus;
+  observaciones?: string;
+  fotosRecepcion: number;
+  creadoEn: string;
+  actualizadoEn: string;
+};
+
+export type LaundryBatchItem = {
+  id: string;
+  batchId: string;
+  categoria: LinenCategory;
+  nombre: string;
+  tamano: LinenSize;
+  cantidadRecibida: number;
+  cantidadAprobada: number;
+  cantidadObservada: number;
+  cantidadBaja: number;
+  cantidadExtraviada: number;
+  estado: LaundryStatus;
+  observaciones?: string;
+  fotoUrl?: string;
+  costoUnitario: number;
+  costoReposicionEstimado: number;
+  sugerirCargoHuesped: boolean;
+};
+
+export type LaundryMovement = {
+  id: string;
+  linenItemId?: string;
+  batchId: string;
+  origen: LaundryLocation;
+  destino: LaundryLocation;
+  estadoAnterior: LaundryStatus;
+  estadoNuevo: LaundryStatus;
+  cantidad: number;
+  responsable: string;
+  fecha: string;
+  observaciones?: string;
+};
+
+export type LinenKitItem = {
+  id: string;
+  kitId: string;
+  categoria: LinenCategory;
+  nombre: string;
+  tamano: LinenSize;
+  cantidadRequerida: number;
+  cantidadIncluida: number;
+  estado: "completo" | "faltante" | "observado";
+  observaciones?: string;
+};
+
+export type LinenKit = {
+  id: string;
+  propertyId: string;
+  propertyName: string;
+  tipoKit: KitType;
+  estado: KitStatus;
+  fechaArmado?: string;
+  responsableArmado?: string;
+  fechaEntrega?: string;
+  responsableEntrega?: string;
+  items: LinenKitItem[];
+  observaciones?: string;
+};
+
+export type LaundryCost = {
+  id: string;
+  fecha: string;
+  kgProcesados: number;
+  habitacionesAtendidas: number;
+  costoManoObra: number;
+  costoAgua: number;
+  costoGas: number;
+  costoElectricidad: number;
+  costoQuimicos: number;
+  costoMantenimiento: number;
+  costoMermaBlancos: number;
+  otrosCostos: number;
+  costoTotal: number;
+  costoPorKg: number;
+  costoPorHabitacion: number;
+  observaciones?: string;
+};
+
+export type LaundryCapacity = {
+  id: string;
+  fecha: string;
+  lavadorasDisponibles: number;
+  secadorasDisponibles: number;
+  capacidadLavadoKgDia: number;
+  capacidadSecadoKgDia: number;
+  kgProcesados: number;
+  porcentajeUso: number;
+  alertaSaturacion: "normal" | "alta" | "saturada";
+  observaciones?: string;
+};
+
+export type WarehouseStockItem = {
+  id: string;
+  categoria: LinenCategory;
+  stockDisponible: number;
+  stockMinimo: number;
+  stock50Habitaciones: number;
+  stock100Habitaciones: number;
+  nivel: StockLevel;
 };
 
 export type Apartment = {

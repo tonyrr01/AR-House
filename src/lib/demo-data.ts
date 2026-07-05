@@ -6,10 +6,17 @@ import type {
   CleaningLinenReplacement,
   DamageReport,
   InventoryItem,
+  LaundryBatch,
+  LaundryBatchItem,
+  LaundryCapacity,
+  LaundryCost,
+  LaundryMovement,
   LinenControlItem,
   LinenDepartmentSummary,
   LinenItem,
-  MaintenanceTicket
+  LinenKit,
+  MaintenanceTicket,
+  WarehouseStockItem
 } from "@/types";
 
 export const apartments: Apartment[] = [
@@ -481,6 +488,336 @@ export const linenDepartmentSummaries: LinenDepartmentSummary[] = [
     enLavanderia: 0,
     reposicionSugerida: 2,
     costoEstimado: 520
+  }
+];
+
+export const laundryRooms = Array.from({ length: 50 }, (_, index) => {
+  const number = index + 1;
+  const floor = number <= 25 ? 1 : 2;
+  return {
+    id: `room-${String(number).padStart(3, "0")}`,
+    name: `Habitacion ${floor}${String(number).padStart(2, "0")}`,
+    beds: 2,
+    baths: 2,
+    expectedKg: 5.8
+  };
+});
+
+export const laundryBatches: LaundryBatch[] = [
+  {
+    id: "lb-1001",
+    fechaRecepcion: "2026-07-04",
+    propertyId: "dep-101",
+    propertyName: "Departamento 101",
+    cleaningId: "lim-1001",
+    responsableRecepcion: "Ana Lopez",
+    pesoKg: 28.4,
+    piezasRecibidas: 42,
+    estado: "Sucio recibido",
+    observaciones: "Checkout con volumen normal.",
+    fotosRecepcion: 1,
+    creadoEn: "2026-07-04T08:10:00",
+    actualizadoEn: "2026-07-04T08:10:00"
+  },
+  {
+    id: "lb-1002",
+    fechaRecepcion: "2026-07-04",
+    propertyId: "dep-102",
+    propertyName: "Departamento 102",
+    cleaningId: "lim-1002",
+    responsableRecepcion: "Brenda Cruz",
+    pesoKg: 31.2,
+    piezasRecibidas: 47,
+    estado: "En lavado",
+    observaciones: "Separar tapetes manchados.",
+    fotosRecepcion: 2,
+    creadoEn: "2026-07-04T09:15:00",
+    actualizadoEn: "2026-07-04T10:40:00"
+  },
+  {
+    id: "lb-1003",
+    fechaRecepcion: "2026-07-04",
+    propertyId: "dep-201",
+    propertyName: "Departamento 201",
+    cleaningId: "lim-1003",
+    responsableRecepcion: "Carlos Mena",
+    pesoKg: 35.6,
+    piezasRecibidas: 51,
+    estado: "En inspeccion",
+    observaciones: "Revisar protectores de colchon.",
+    fotosRecepcion: 2,
+    creadoEn: "2026-07-04T07:45:00",
+    actualizadoEn: "2026-07-04T11:25:00"
+  },
+  {
+    id: "lb-1004",
+    fechaRecepcion: "2026-07-04",
+    propertyId: "dep-202",
+    propertyName: "Departamento 202",
+    cleaningId: "lim-1004",
+    responsableRecepcion: "Laura Vega",
+    pesoKg: 24.8,
+    piezasRecibidas: 35,
+    estado: "Limpio aprobado",
+    observaciones: "Listo para bodega limpia.",
+    fotosRecepcion: 0,
+    creadoEn: "2026-07-04T06:55:00",
+    actualizadoEn: "2026-07-04T12:10:00"
+  },
+  {
+    id: "lb-1005",
+    fechaRecepcion: "2026-07-03",
+    propertyId: "dep-101",
+    propertyName: "Departamento 101",
+    cleaningId: "lim-0999",
+    responsableRecepcion: "Ana Lopez",
+    pesoKg: 18.5,
+    piezasRecibidas: 22,
+    estado: "Observado",
+    observaciones: "Toallas con manchas no recuperables.",
+    fotosRecepcion: 3,
+    creadoEn: "2026-07-03T17:20:00",
+    actualizadoEn: "2026-07-04T09:30:00"
+  },
+  {
+    id: "lb-1006",
+    fechaRecepcion: "2026-07-03",
+    propertyId: "dep-201",
+    propertyName: "Departamento 201",
+    cleaningId: "lim-0998",
+    responsableRecepcion: "Supervisor guardia",
+    pesoKg: 12.1,
+    piezasRecibidas: 12,
+    estado: "Baja",
+    observaciones: "Baja por rotura y fin de vida util.",
+    fotosRecepcion: 2,
+    creadoEn: "2026-07-03T16:00:00",
+    actualizadoEn: "2026-07-04T08:00:00"
+  }
+];
+
+export const laundryBatchItems: LaundryBatchItem[] = [
+  {
+    id: "lbi-1",
+    batchId: "lb-1001",
+    categoria: "Sabana bajera",
+    nombre: "Sabana bajera queen",
+    tamano: "queen",
+    cantidadRecibida: 4,
+    cantidadAprobada: 0,
+    cantidadObservada: 0,
+    cantidadBaja: 0,
+    cantidadExtraviada: 0,
+    estado: "Sucio recibido",
+    costoUnitario: 420,
+    costoReposicionEstimado: 0,
+    sugerirCargoHuesped: false
+  },
+  {
+    id: "lbi-2",
+    batchId: "lb-1002",
+    categoria: "Tapete de bano",
+    nombre: "Tapete de bano hotelero",
+    tamano: "estandar",
+    cantidadRecibida: 3,
+    cantidadAprobada: 0,
+    cantidadObservada: 1,
+    cantidadBaja: 0,
+    cantidadExtraviada: 0,
+    estado: "Manchado recuperable",
+    observaciones: "Pretratamiento antes de lavado.",
+    costoUnitario: 180,
+    costoReposicionEstimado: 0,
+    sugerirCargoHuesped: false
+  },
+  {
+    id: "lbi-3",
+    batchId: "lb-1003",
+    categoria: "Protector de colchon",
+    nombre: "Protector impermeable queen",
+    tamano: "queen",
+    cantidadRecibida: 4,
+    cantidadAprobada: 3,
+    cantidadObservada: 1,
+    cantidadBaja: 0,
+    cantidadExtraviada: 0,
+    estado: "Roto",
+    observaciones: "Requiere foto y posible cargo.",
+    costoUnitario: 560,
+    costoReposicionEstimado: 560,
+    sugerirCargoHuesped: true
+  },
+  {
+    id: "lbi-4",
+    batchId: "lb-1005",
+    categoria: "Toalla de bano",
+    nombre: "Toalla de bano 600 gsm",
+    tamano: "estandar",
+    cantidadRecibida: 6,
+    cantidadAprobada: 4,
+    cantidadObservada: 2,
+    cantidadBaja: 1,
+    cantidadExtraviada: 0,
+    estado: "Manchado no recuperable",
+    observaciones: "Sugerir reposicion.",
+    costoUnitario: 320,
+    costoReposicionEstimado: 320,
+    sugerirCargoHuesped: true
+  }
+];
+
+export const laundryMovements: LaundryMovement[] = [
+  {
+    id: "mov-1",
+    batchId: "lb-1002",
+    origen: "Recepcion lavanderia",
+    destino: "Lavadora",
+    estadoAnterior: "En clasificacion",
+    estadoNuevo: "En lavado",
+    cantidad: 47,
+    responsable: "Brenda Cruz",
+    fecha: "2026-07-04T10:40:00",
+    observaciones: "Carga 1 de 2"
+  },
+  {
+    id: "mov-2",
+    batchId: "lb-1003",
+    origen: "Secadora",
+    destino: "Inspeccion",
+    estadoAnterior: "En secado",
+    estadoNuevo: "En inspeccion",
+    cantidad: 51,
+    responsable: "Carlos Mena",
+    fecha: "2026-07-04T11:25:00"
+  },
+  {
+    id: "mov-3",
+    batchId: "lb-1004",
+    origen: "Inspeccion",
+    destino: "Bodega limpia",
+    estadoAnterior: "En inspeccion",
+    estadoNuevo: "Limpio aprobado",
+    cantidad: 35,
+    responsable: "Laura Vega",
+    fecha: "2026-07-04T12:10:00"
+  }
+];
+
+const kitItemsQueen = (kitId: string) => [
+  { id: `${kitId}-1`, kitId, categoria: "Sabana bajera" as const, nombre: "Sabana bajera queen", tamano: "queen" as const, cantidadRequerida: 1, cantidadIncluida: 1, estado: "completo" as const },
+  { id: `${kitId}-2`, kitId, categoria: "Sabana encimera" as const, nombre: "Sabana encimera queen", tamano: "queen" as const, cantidadRequerida: 1, cantidadIncluida: 1, estado: "completo" as const },
+  { id: `${kitId}-3`, kitId, categoria: "Funda de almohada" as const, nombre: "Fundas de almohada", tamano: "queen" as const, cantidadRequerida: 2, cantidadIncluida: 2, estado: "completo" as const },
+  { id: `${kitId}-4`, kitId, categoria: "Funda duvet" as const, nombre: "Funda duvet queen", tamano: "queen" as const, cantidadRequerida: 1, cantidadIncluida: 1, estado: "completo" as const }
+];
+
+export const linenKits: LinenKit[] = [
+  {
+    id: "kit-101-full",
+    propertyId: "dep-101",
+    propertyName: "Departamento 101",
+    tipoKit: "completo_departamento",
+    estado: "pendiente",
+    fechaArmado: "2026-07-04",
+    responsableArmado: "Bodega turno AM",
+    items: kitItemsQueen("kit-101-full"),
+    observaciones: "Falta agregar kit bano y playa."
+  },
+  {
+    id: "kit-102-bano",
+    propertyId: "dep-102",
+    propertyName: "Departamento 102",
+    tipoKit: "bano",
+    estado: "armado",
+    fechaArmado: "2026-07-04",
+    responsableArmado: "Bodega turno AM",
+    fechaEntrega: "2026-07-04",
+    responsableEntrega: "Ana Lopez",
+    items: [
+      { id: "kit-102-bano-1", kitId: "kit-102-bano", categoria: "Toalla de bano", nombre: "Toallas de bano", tamano: "estandar", cantidadRequerida: 2, cantidadIncluida: 2, estado: "completo" },
+      { id: "kit-102-bano-2", kitId: "kit-102-bano", categoria: "Toalla de mano", nombre: "Toalla de mano", tamano: "estandar", cantidadRequerida: 1, cantidadIncluida: 1, estado: "completo" },
+      { id: "kit-102-bano-3", kitId: "kit-102-bano", categoria: "Tapete de bano", nombre: "Tapete de bano", tamano: "estandar", cantidadRequerida: 1, cantidadIncluida: 1, estado: "completo" }
+    ]
+  },
+  {
+    id: "kit-202-playa",
+    propertyId: "dep-202",
+    propertyName: "Departamento 202",
+    tipoKit: "playa",
+    estado: "incompleto",
+    fechaArmado: "2026-07-04",
+    responsableArmado: "Bodega turno AM",
+    items: [
+      { id: "kit-202-playa-1", kitId: "kit-202-playa", categoria: "Toalla de playa/alberca", nombre: "Toallas de playa", tamano: "playa", cantidadRequerida: 6, cantidadIncluida: 4, estado: "faltante", observaciones: "Stock bajo por extravios." }
+    ],
+    observaciones: "No marcar entregado hasta completar o confirmar excepcion."
+  }
+];
+
+export const warehouseStockItems: WarehouseStockItem[] = [
+  { id: "stock-1", categoria: "Sabana bajera", stockDisponible: 140, stockMinimo: 110, stock50Habitaciones: 100, stock100Habitaciones: 220, nivel: "suficiente" },
+  { id: "stock-2", categoria: "Toalla de bano", stockDisponible: 92, stockMinimo: 120, stock50Habitaciones: 150, stock100Habitaciones: 300, nivel: "bajo" },
+  { id: "stock-3", categoria: "Tapete de bano", stockDisponible: 28, stockMinimo: 70, stock50Habitaciones: 80, stock100Habitaciones: 160, nivel: "critico" },
+  { id: "stock-4", categoria: "Funda de almohada", stockDisponible: 260, stockMinimo: 180, stock50Habitaciones: 200, stock100Habitaciones: 420, nivel: "suficiente" },
+  { id: "stock-5", categoria: "Toalla de playa/alberca", stockDisponible: 48, stockMinimo: 80, stock50Habitaciones: 120, stock100Habitaciones: 240, nivel: "critico" }
+];
+
+export const laundryCosts: LaundryCost[] = [
+  {
+    id: "cost-2026-07-04",
+    fecha: "2026-07-04",
+    kgProcesados: 238,
+    habitacionesAtendidas: 46,
+    costoManoObra: 3200,
+    costoAgua: 620,
+    costoGas: 980,
+    costoElectricidad: 740,
+    costoQuimicos: 860,
+    costoMantenimiento: 450,
+    costoMermaBlancos: 1440,
+    otrosCostos: 300,
+    costoTotal: 8590,
+    costoPorKg: 36.09,
+    costoPorHabitacion: 186.74,
+    observaciones: "Dia estable con merma moderada por manchas."
+  }
+];
+
+export const laundryCapacities: LaundryCapacity[] = [
+  {
+    id: "cap-65",
+    fecha: "2026-07-04",
+    lavadorasDisponibles: 3,
+    secadorasDisponibles: 2,
+    capacidadLavadoKgDia: 300,
+    capacidadSecadoKgDia: 280,
+    kgProcesados: 182,
+    porcentajeUso: 65,
+    alertaSaturacion: "normal",
+    observaciones: "Operacion fluida para 50 habitaciones."
+  },
+  {
+    id: "cap-85",
+    fecha: "2026-07-05",
+    lavadorasDisponibles: 3,
+    secadorasDisponibles: 2,
+    capacidadLavadoKgDia: 300,
+    capacidadSecadoKgDia: 280,
+    kgProcesados: 255,
+    porcentajeUso: 85,
+    alertaSaturacion: "alta",
+    observaciones: "Preparar turnos y carros adicionales."
+  },
+  {
+    id: "cap-105",
+    fecha: "2026-07-06",
+    lavadorasDisponibles: 3,
+    secadorasDisponibles: 2,
+    capacidadLavadoKgDia: 300,
+    capacidadSecadoKgDia: 280,
+    kgProcesados: 315,
+    porcentajeUso: 105,
+    alertaSaturacion: "saturada",
+    observaciones: "Rebasada capacidad; tercerizar o agregar equipo."
   }
 ];
 
