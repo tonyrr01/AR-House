@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { UserRole } from "@/types";
@@ -38,6 +39,10 @@ export async function signInAction(formData: FormData) {
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
+  if (error?.message.toLowerCase().includes("email not confirmed")) {
+    redirect("/login?error=confirm-email");
+  }
+
   if (error) redirect("/login?error=invalid");
 
   redirect("/");
@@ -72,6 +77,38 @@ export async function signUpAction(formData: FormData) {
   }
 
   redirect("/login?status=created");
+}
+
+export async function resetPasswordAction(formData: FormData) {
+  const email = getString(formData, "recovery_email");
+
+  if (!email) redirect("/login?error=recovery-missing");
+
+  const requestHeaders = await headers();
+  const origin = requestHeaders.get("origin") ?? "https://housekeeping-5-estrellas.vercel.app";
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/auth/callback?next=/reset-password`
+  });
+
+  if (error) redirect("/login?error=recovery");
+
+  redirect("/login?status=recovery-sent");
+}
+
+export async function updatePasswordAction(formData: FormData) {
+  const password = getString(formData, "password");
+  const passwordConfirm = getString(formData, "password_confirm");
+
+  if (!password || !passwordConfirm) redirect("/reset-password?error=missing");
+  if (password !== passwordConfirm) redirect("/reset-password?error=password-match");
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({ password });
+
+  if (error) redirect("/reset-password?error=update");
+
+  redirect("/login?status=password-updated");
 }
 
 export async function signOutAction() {

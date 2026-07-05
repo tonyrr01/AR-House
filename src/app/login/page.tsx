@@ -1,15 +1,21 @@
 import { LockKeyhole, Sparkles } from "lucide-react";
-import { signInAction, signUpAction } from "@/app/login/actions";
+import { resetPasswordAction, signInAction, signUpAction } from "@/app/login/actions";
+import { PasswordField } from "@/components/auth/password-field";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Field, Input, Select } from "@/components/ui/field";
 
 const messages: Record<string, string> = {
   missing: "Completa todos los campos obligatorios.",
-  invalid: "Correo o contrasena incorrectos.",
+  invalid: "Correo o contrasena incorrectos. Revisa que el usuario exista y que el correo este confirmado.",
+  "confirm-email": "Tu correo todavia no esta confirmado. Revisa tu bandeja de entrada.",
   "password-match": "Las contrasenas no coinciden.",
   signup: "No se pudo crear el usuario. Revisa el correo o contrasena.",
-  created: "Usuario creado. Ya puedes iniciar sesion."
+  "recovery-missing": "Escribe el correo para recuperar la contrasena.",
+  recovery: "No se pudo enviar la recuperacion. Revisa el correo e intenta de nuevo.",
+  created: "Usuario creado. Ya puedes iniciar sesion.",
+  "recovery-sent": "Te enviamos un correo para recuperar la contrasena.",
+  "password-updated": "Contrasena actualizada. Ya puedes iniciar sesion."
 };
 
 export default async function LoginPage({
@@ -57,12 +63,18 @@ export default async function LoginPage({
               <Field label="Correo">
                 <Input name="email" type="email" autoComplete="email" required />
               </Field>
-              <Field label="Contrasena">
-                <Input name="password" type="password" autoComplete="current-password" required />
-              </Field>
+              <PasswordField label="Contrasena" name="password" autoComplete="current-password" />
               <Button type="submit" className="w-full">
                 <LockKeyhole className="h-5 w-5" />
                 Entrar
+              </Button>
+            </form>
+            <form action={resetPasswordAction} className="mt-5 grid gap-3 rounded-md bg-slate-50 p-4">
+              <Field label="Recuperar contrasena">
+                <Input name="recovery_email" type="email" autoComplete="email" placeholder="correo@ejemplo.com" required />
+              </Field>
+              <Button type="submit" variant="secondary" className="w-full">
+                Enviar correo de recuperacion
               </Button>
             </form>
           </Card>
@@ -76,12 +88,8 @@ export default async function LoginPage({
               <Field label="Correo">
                 <Input name="email" type="email" autoComplete="email" required />
               </Field>
-              <Field label="Contrasena">
-                <Input name="password" type="password" autoComplete="new-password" minLength={6} required />
-              </Field>
-              <Field label="Confirmar contrasena">
-                <Input name="password_confirm" type="password" autoComplete="new-password" minLength={6} required />
-              </Field>
+              <PasswordField label="Contrasena" name="password" autoComplete="new-password" minLength={6} />
+              <PasswordField label="Confirmar contrasena" name="password_confirm" autoComplete="new-password" minLength={6} />
               <Field label="Rol">
                 <Select name="role" defaultValue="limpieza">
                   <option value="limpieza">limpieza</option>
