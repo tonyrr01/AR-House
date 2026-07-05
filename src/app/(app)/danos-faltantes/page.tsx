@@ -4,7 +4,13 @@ import { PriorityBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Field, Input, Select, Textarea } from "@/components/ui/field";
-import { cleanings, damageReports } from "@/lib/demo-data";
+import { cleanings, damageReports, linenControlItems } from "@/lib/demo-data";
+
+const linenChargeSuggestions = linenControlItems.filter(
+  (item) =>
+    item.sugerirCargoHuesped ||
+    ["Manchado no recuperable", "Roto", "Extraviado", "Baja", "Cargo sugerido al huesped"].includes(item.estado)
+);
 
 export default function DamagesPage() {
   return (
@@ -45,6 +51,12 @@ export default function DamagesPage() {
             <Camera className="h-5 w-5 text-sea" />
             Nuevo reporte
           </h2>
+          <div className="mb-5 rounded-md border border-clay/20 bg-clay/10 p-4">
+            <p className="text-sm font-bold text-clay">Sugerencias desde Blancos</p>
+            <p className="mt-1 text-sm font-semibold text-slate-700">
+              {linenChargeSuggestions.length} blanco(s) con posible dano, faltante o cargo al huesped.
+            </p>
+          </div>
           <form className="grid gap-5">
             <Field label="Limpieza">
               <Select>
@@ -65,8 +77,19 @@ export default function DamagesPage() {
             <Field label="Articulo relacionado">
               <Input placeholder="Ej. Copa de vino, sofa, toalla" />
             </Field>
+            <Field label="Categoria">
+              <Select defaultValue="Blancos">
+                <option>Blancos</option>
+                <option>Inventario</option>
+                <option>Mobiliario</option>
+                <option>Electronicos</option>
+              </Select>
+            </Field>
             <Field label="Tipo de dano">
               <Input placeholder="Roto, manchado, faltante..." />
+            </Field>
+            <Field label="Costo estimado">
+              <Input placeholder="$0" />
             </Field>
             <Field label="Descripcion">
               <Textarea placeholder="Describe que encontraste y en que area." />

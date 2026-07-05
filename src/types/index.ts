@@ -16,6 +16,79 @@ export type TicketStatus = "abierto" | "en_proceso" | "resuelto" | "cerrado";
 export type Priority = "baja" | "media" | "alta" | "urgente" | "importante" | "preventivo";
 export type PhotoKind = "recepcion" | "dano" | "faltante" | "final";
 
+export type LinenCategory =
+  | "Sabana bajera"
+  | "Sabana encimera"
+  | "Funda de almohada"
+  | "Protector de almohada"
+  | "Protector de colchon"
+  | "Toalla de bano"
+  | "Toalla de mano"
+  | "Toalla facial"
+  | "Tapete de bano"
+  | "Duvet"
+  | "Funda duvet"
+  | "Almohada"
+  | "Cobija"
+  | "Toalla de playa/alberca"
+  | "Trapo de cocina";
+
+export type LinenSize = "individual" | "matrimonial" | "queen" | "king" | "estandar" | "playa" | "otro";
+
+export type LinenStatus =
+  | "Nuevo"
+  | "Bueno"
+  | "En uso"
+  | "En lavanderia"
+  | "En bodega"
+  | "Manchado recuperable"
+  | "Manchado no recuperable"
+  | "Roto"
+  | "Percudido"
+  | "Extraviado"
+  | "Baja"
+  | "Cargo sugerido al huesped";
+
+export type LinenLocation = "Departamento" | "Bodega" | "Lavanderia" | "En transito" | "Baja";
+
+export type LinenControlItem = {
+  id: string;
+  categoria: LinenCategory;
+  nombre: string;
+  tamano: LinenSize;
+  color: string;
+  proveedor: string;
+  marca: string;
+  fechaCompra: string;
+  costoUnitario: number;
+  cantidadTotal: number;
+  cantidadEsperada: number;
+  cantidadActual: number;
+  estado: LinenStatus;
+  ubicacion: LinenLocation;
+  propertyId?: string;
+  propertyName?: string;
+  ultimaRevision: string;
+  fotoUrl?: string;
+  observaciones?: string;
+  requiereReposicion: boolean;
+  sugerirCargoHuesped: boolean;
+  costoCargoSugerido: number;
+};
+
+export type LinenDepartmentSummary = {
+  propertyId: string;
+  propertyName: string;
+  totalAsignado: number;
+  completos: number;
+  faltantes: number;
+  manchados: number;
+  danados: number;
+  enLavanderia: number;
+  reposicionSugerida: number;
+  costoEstimado: number;
+};
+
 export type Apartment = {
   id: string;
   name: string;

@@ -13,7 +13,22 @@ const statusStyles: Record<string, string> = {
   ok: "border-emerald-200 bg-emerald-50 text-emerald-800",
   revisar: "border-amber-200 bg-amber-50 text-amber-800",
   reponer: "border-red-200 bg-red-50 text-red-800",
-  retirar: "border-slate-300 bg-slate-100 text-slate-800"
+  retirar: "border-slate-300 bg-slate-100 text-slate-800",
+  Nuevo: "border-sky-200 bg-sky-50 text-sky-800",
+  Bueno: "border-emerald-200 bg-emerald-50 text-emerald-800",
+  "En uso": "border-pine/20 bg-mist text-pine",
+  "En lavanderia": "border-sky-200 bg-sky-50 text-sky-800",
+  "En bodega": "border-emerald-200 bg-emerald-50 text-emerald-800",
+  "Manchado recuperable": "border-amber-200 bg-amber-50 text-amber-800",
+  "Manchado no recuperable": "border-red-200 bg-red-50 text-red-800",
+  Roto: "border-red-200 bg-red-50 text-red-800",
+  Percudido: "border-amber-200 bg-amber-50 text-amber-800",
+  Extraviado: "border-red-200 bg-red-50 text-red-800",
+  Baja: "border-slate-300 bg-slate-100 text-slate-800",
+  "Cargo sugerido al huesped": "border-clay/20 bg-clay/10 text-clay",
+  OK: "border-emerald-200 bg-emerald-50 text-emerald-800",
+  Faltante: "border-red-200 bg-red-50 text-red-800",
+  Manchado: "border-amber-200 bg-amber-50 text-amber-800"
 };
 
 const statusLabels: Record<string, string> = {

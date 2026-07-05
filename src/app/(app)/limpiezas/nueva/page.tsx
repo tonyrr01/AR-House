@@ -1,9 +1,22 @@
-import { CalendarDays, ClipboardList, UserRound } from "lucide-react";
+import { CalendarDays, ClipboardList, Shirt, TriangleAlert, UserRound } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Field, Input, Select } from "@/components/ui/field";
-import { apartments } from "@/lib/demo-data";
+import { apartments, linenControlItems } from "@/lib/demo-data";
+
+const quickLinenItems = [
+  "Toallas de bano",
+  "Toallas de mano",
+  "Tapetes de bano",
+  "Sabanas",
+  "Fundas",
+  "Almohadas",
+  "Protectores",
+  "Toallas de playa/alberca"
+];
+
+const linenIssues = linenControlItems.filter((item) => item.requiereReposicion || item.sugerirCargoHuesped);
 
 export default function NewCleaningPage() {
   return (
@@ -99,6 +112,37 @@ export default function NewCleaningPage() {
               </Field>
             </div>
           </Card>
+
+          <Card>
+            <div className="mb-5 flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-md bg-clay text-white">
+                <Shirt className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-sea">Paso 4</p>
+                <h2 className="text-xl font-bold">Blancos</h2>
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {quickLinenItems.map((item) => (
+                <label key={item} className="flex min-h-14 items-center gap-3 rounded-md border border-slate-200 bg-slate-50 px-4 py-3 text-base font-semibold text-ink">
+                  <input type="checkbox" className="h-5 w-5 accent-pine" defaultChecked />
+                  {item}
+                </label>
+              ))}
+            </div>
+            <div className="mt-5 rounded-md border border-amber-200 bg-amber-50 p-4">
+              <div className="flex gap-3">
+                <TriangleAlert className="mt-0.5 h-5 w-5 shrink-0 text-amber-700" />
+                <div>
+                  <p className="font-bold text-amber-900">Si hay faltante, mancha o dano</p>
+                  <p className="mt-1 text-sm font-semibold text-amber-800">
+                    Registra foto y sugiere dano/faltante relacionado con esta limpieza. El cargo al huesped queda para supervision.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Card>
         </div>
 
         <Card className="h-fit">
@@ -106,6 +150,9 @@ export default function NewCleaningPage() {
           <div className="mt-5 grid gap-3 text-sm font-medium text-slate-600">
             <p className="rounded-md bg-slate-50 p-3">Unidad, horario y responsable quedan listos para operar.</p>
             <p className="rounded-md bg-slate-50 p-3">El equipo vera esta limpieza en pendientes.</p>
+            <p className="rounded-md bg-slate-50 p-3">
+              Blancos con reposicion o cargo sugerido: <span className="font-bold text-clay">{linenIssues.length}</span>
+            </p>
           </div>
           <Button type="button" className="mt-5 w-full">Crear limpieza</Button>
         </Card>
