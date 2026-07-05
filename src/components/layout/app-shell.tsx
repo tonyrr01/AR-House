@@ -8,6 +8,7 @@ import {
   PlusCircle,
   Shirt,
   Sparkles,
+  Settings2,
   WashingMachine,
   Wrench
 } from "lucide-react";
@@ -24,6 +25,7 @@ const navItems = [
   { href: "/inventario", label: "Inventario", icon: PackageCheck },
   { href: "/blancos", label: "Blancos", icon: Shirt },
   { href: "/lavanderia", label: "Lavanderia y Bodega", icon: WashingMachine },
+  { href: "/mantenimiento", label: "Mantenimiento y Activos", icon: Settings2 },
   { href: "/danos-faltantes", label: "Danos y faltantes", icon: AlertTriangle },
   { href: "/tickets", label: "Tickets", icon: Wrench },
   { href: "/reportes/limpieza", label: "Reporte", icon: BarChart3 }

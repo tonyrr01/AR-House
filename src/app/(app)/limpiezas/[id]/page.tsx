@@ -1,4 +1,4 @@
-import { Camera, ClipboardCheck, PackageCheck, Send, Sparkles, TriangleAlert, WashingMachine } from "lucide-react";
+import { Camera, ClipboardCheck, PackageCheck, Send, Sparkles, TriangleAlert, WashingMachine, Wrench } from "lucide-react";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { Button, ButtonLink } from "@/components/ui/button";
@@ -80,7 +80,32 @@ export default async function CleaningDetailPage({ params }: { params: Promise<{
           </Card>
 
           <Card>
-            <CardTitle title="4. Enviar blancos a lavanderia" />
+            <CardTitle title="4. Crear ticket de mantenimiento" />
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="rounded-md bg-slate-50 p-4">
+                <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Origen</p>
+                <p className="mt-1 text-lg font-bold text-ink">Limpieza</p>
+              </div>
+              <div className="rounded-md bg-slate-50 p-4">
+                <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Departamento</p>
+                <p className="mt-1 text-lg font-bold text-ink">{cleaning.apartmentName}</p>
+              </div>
+              <div className="rounded-md bg-slate-50 p-4">
+                <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Limpieza</p>
+                <p className="mt-1 text-lg font-bold text-ink">{cleaning.id}</p>
+              </div>
+            </div>
+            <p className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm font-semibold text-amber-900">
+              Mock: abrira mantenimiento con departamento, limpieza relacionada, area, categoria, descripcion, prioridad, foto y costo estimado.
+            </p>
+            <ButtonLink href="/mantenimiento#tickets" variant="secondary" className="mt-5 w-full sm:w-auto">
+              <Wrench className="h-5 w-5" />
+              Crear ticket de mantenimiento
+            </ButtonLink>
+          </Card>
+
+          <Card>
+            <CardTitle title="5. Enviar blancos a lavanderia" />
             <div className="grid gap-4 md:grid-cols-3">
               <div className="rounded-md bg-slate-50 p-4">
                 <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Estado lote</p>
@@ -123,6 +148,10 @@ export default async function CleaningDetailPage({ params }: { params: Promise<{
             <ButtonLink href="/lavanderia" variant="secondary" className="justify-start">
               <WashingMachine className="h-5 w-5" />
               Lavanderia y Bodega
+            </ButtonLink>
+            <ButtonLink href="/mantenimiento#tickets" variant="secondary" className="justify-start">
+              <Wrench className="h-5 w-5" />
+              Ticket mantenimiento
             </ButtonLink>
             <ButtonLink href="/reportes/limpieza" variant="secondary" className="justify-start">
               Ver reporte

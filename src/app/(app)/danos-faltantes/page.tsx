@@ -1,7 +1,7 @@
-import { Camera, ImagePlus, TriangleAlert } from "lucide-react";
+import { Camera, ImagePlus, TriangleAlert, Wrench } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { PriorityBadge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Field, Input, Select, Textarea } from "@/components/ui/field";
 import { cleanings, damageReports, linenControlItems } from "@/lib/demo-data";
@@ -42,6 +42,10 @@ export default function DamagesPage() {
               <p className="mt-5 rounded-md bg-slate-50 p-3 text-sm font-semibold text-slate-600">
                 {report.apartmentName} · {report.photoCount} foto(s) · {report.createdAt}
               </p>
+              <ButtonLink href="/mantenimiento#tickets" variant="secondary" className="mt-4 w-full justify-center sm:w-auto">
+                <Wrench className="h-5 w-5" />
+                Enviar a mantenimiento
+              </ButtonLink>
             </Card>
           ))}
         </div>

@@ -361,6 +361,281 @@ export type MaintenanceTicket = {
   createdAt: string;
 };
 
+export type BusinessUnit =
+  | "housekeeping"
+  | "laundry"
+  | "maintenance"
+  | "replacements"
+  | "owner_charge"
+  | "guest_charge"
+  | "warranty"
+  | "preventive";
+
+export type MaintenanceSourceModule =
+  | "limpieza"
+  | "danos_faltantes"
+  | "huesped"
+  | "propietario"
+  | "supervisor"
+  | "preventivo"
+  | "manual";
+
+export type MaintenanceIssueType =
+  | "Desperfecto"
+  | "Dano atribuible a huesped"
+  | "Desgaste natural"
+  | "Mantenimiento preventivo"
+  | "Mejora"
+  | "Contingencia"
+  | "Garantia"
+  | "Reposicion"
+  | "Otro";
+
+export type MaintenanceCategory =
+  | "Aire acondicionado"
+  | "Plomeria"
+  | "Electricidad"
+  | "Carpinteria"
+  | "Pintura"
+  | "Tablaroca"
+  | "Pisos"
+  | "Aluminio"
+  | "Banos"
+  | "Cocina"
+  | "Electrodomesticos"
+  | "Mobiliario"
+  | "Cerrajeria"
+  | "Internet / TV"
+  | "Iluminacion"
+  | "Canceleria"
+  | "Decoracion"
+  | "Seguridad"
+  | "Otro";
+
+export type TechnicianSpecialty =
+  | "Carpintero"
+  | "Pintor"
+  | "Plomero"
+  | "Electrico"
+  | "Tablaroquero"
+  | "Pisero"
+  | "Tecnico de aire acondicionado"
+  | "Aluminero"
+  | "Cerrajero"
+  | "Tecnico de electrodomesticos"
+  | "Tecnico general"
+  | "Supervisor";
+
+export type MaintenancePriority = "Urgente" | "Alta" | "Media" | "Baja" | "Preventiva";
+
+export type MaintenanceTicketStatus =
+  | "Abierto"
+  | "En revision"
+  | "Diagnostico"
+  | "Cotizacion"
+  | "Aprobado"
+  | "Asignado"
+  | "En proceso"
+  | "En espera de material"
+  | "Terminado"
+  | "Supervision"
+  | "Cerrado"
+  | "Cancelado";
+
+export type WorkOrderStatus =
+  | "Pendiente"
+  | "Asignada"
+  | "En proceso"
+  | "En espera de material"
+  | "Terminada"
+  | "En supervision"
+  | "Cerrada"
+  | "Cancelada";
+
+export type MaintenanceArea =
+  | "sala"
+  | "cocina"
+  | "recamara"
+  | "bano"
+  | "balcon"
+  | "lavanderia"
+  | "instalaciones"
+  | "exterior"
+  | "otro";
+
+export type MaintenanceChargeTo = "huesped" | "propietario" | "operacion" | "garantia" | "preventivo" | "seguro";
+
+export type MaintenanceAssetTicket = {
+  id: string;
+  propertyId: string;
+  propertyName: string;
+  sourceModule: MaintenanceSourceModule;
+  sourceId?: string;
+  title: string;
+  description: string;
+  issueType: MaintenanceIssueType;
+  category: MaintenanceCategory;
+  priority: MaintenancePriority;
+  status: MaintenanceTicketStatus;
+  area: MaintenanceArea;
+  reportedBy: string;
+  reportedAt: string;
+  photosBefore: number;
+  estimatedCost: number;
+  finalCost: number;
+  suggestedChargeToGuest: boolean;
+  chargeTo: MaintenanceChargeTo;
+  businessUnit: BusinessUnit;
+  dueDate?: string;
+  assignedSpecialty: TechnicianSpecialty;
+  assignedTechnicianId?: string;
+  assignedTechnicianName?: string;
+  createdAt: string;
+  updatedAt: string;
+  closedAt?: string;
+  observations?: string;
+};
+
+export type WorkOrder = {
+  id: string;
+  ticketId: string;
+  propertyId: string;
+  propertyName: string;
+  title: string;
+  description: string;
+  assignedTechnicianId?: string;
+  assignedTechnicianName?: string;
+  specialty: TechnicianSpecialty;
+  scheduledDate: string;
+  startTime?: string;
+  endTime?: string;
+  status: WorkOrderStatus;
+  diagnosis?: string;
+  workPerformed?: string;
+  laborCost: number;
+  materialCost: number;
+  totalCost: number;
+  materialsUsed: string[];
+  photosBefore: number;
+  photosDuring: number;
+  photosAfter: number;
+  supervisorApproval: boolean;
+  approvedBy?: string;
+  approvedAt?: string;
+  chargeTo: MaintenanceChargeTo;
+  businessUnit: BusinessUnit;
+  observations?: string;
+};
+
+export type PreventiveMaintenancePlan = {
+  id: string;
+  propertyId: string;
+  propertyName: string;
+  frequency: "bimestral";
+  nextDate: string;
+  lastDate?: string;
+  status: "vigente" | "vencido" | "completado";
+  assignedSupervisor: string;
+  checklistTemplateId: string;
+  observations?: string;
+};
+
+export type PreventiveMaintenanceVisit = {
+  id: string;
+  planId: string;
+  propertyId: string;
+  propertyName: string;
+  scheduledDate: string;
+  completedDate?: string;
+  responsible: string;
+  status: "programada" | "en_proceso" | "completada" | "vencida";
+  checklistResults: Array<{ area: string; completed: number; total: number; issues: number }>;
+  ticketsCreated: number;
+  photos: number;
+  generalCondition: "excelente" | "buena" | "regular" | "critica";
+  estimatedRepairsCost: number;
+  observations?: string;
+};
+
+export type TechnicalAsset = {
+  id: string;
+  propertyId: string;
+  propertyName: string;
+  category: string;
+  area: MaintenanceArea;
+  name: string;
+  brand?: string;
+  model?: string;
+  serialNumber?: string;
+  materialType?: string;
+  color?: string;
+  finish?: string;
+  dimensions?: string;
+  supplier?: string;
+  purchaseDate?: string;
+  installationDate?: string;
+  warrantyUntil?: string;
+  cost: number;
+  replacementCost: number;
+  photoUrl?: string;
+  manualUrl?: string;
+  compatibleParts: string[];
+  maintenanceNotes?: string;
+  cleaningCareNotes?: string;
+  status: "ok" | "revisar" | "garantia" | "reponer" | "fuera_servicio";
+  observations?: string;
+};
+
+export type SparePart = {
+  id: string;
+  name: string;
+  category: string;
+  brand?: string;
+  model?: string;
+  compatibleAssetIds: string[];
+  compatibleProperties: string[];
+  stockActual: number;
+  stockMinimo: number;
+  unitCost: number;
+  supplier: string;
+  supplierContact?: string;
+  location: string;
+  photoUrl?: string;
+  leadTimeDays: number;
+  status: "disponible" | "stock_bajo" | "critico" | "descontinuado";
+  observations?: string;
+};
+
+export type Technician = {
+  id: string;
+  name: string;
+  specialty: TechnicianSpecialty;
+  phone: string;
+  email: string;
+  internalOrExternal: "interno" | "externo";
+  hourlyRate: number;
+  active: boolean;
+  rating: number;
+  notes?: string;
+};
+
+export type MaintenanceCost = {
+  id: string;
+  ticketId?: string;
+  workOrderId?: string;
+  propertyId: string;
+  propertyName: string;
+  date: string;
+  laborCost: number;
+  materialCost: number;
+  sparePartsCost: number;
+  externalServiceCost: number;
+  totalCost: number;
+  chargeTo: MaintenanceChargeTo;
+  businessUnit: BusinessUnit;
+  notes?: string;
+};
+
 export type CleaningReport = {
   cleaning: Cleaning;
   checklistCompleted: number;
