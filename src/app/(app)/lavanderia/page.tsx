@@ -14,16 +14,25 @@ import { PageHeader } from "@/components/page-header";
 import { ButtonLink } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import {
+  apartments as demoApartments,
+  cleanings as demoCleanings,
   laundryBatchItems,
-  laundryBatches,
+  laundryBatches as demoLaundryBatches,
   laundryCapacities,
   laundryCosts,
-  laundryMovements,
+  laundryMovements as demoLaundryMovements,
   laundryRooms,
   linenControlItems,
   linenKits,
   warehouseStockItems
 } from "@/lib/demo-data";
+import {
+  getLaundryBatches,
+  getLaundryMovements,
+  getLaundryReferenceData
+} from "@/lib/laundry/supabase-laundry";
+import { createClient } from "@/lib/supabase/server";
+import type { Cleaning } from "@/types";
 
 const nav = [
   ["Dashboard", "#dashboard"],
@@ -41,7 +50,52 @@ const currentCost = laundryCosts[0];
 const currentCapacity = laundryCapacities[1];
 const retiredItems = laundryBatchItems.filter((item) => item.cantidadBaja > 0 || item.estado === "Baja" || item.estado === "Manchado no recuperable");
 
-export default function LaundryPage() {
+export default async function LaundryPage({
+  searchParams
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = searchParams ? await searchParams : {};
+  const statusMessage = params.status === "created"
+    ? "Lote creado en Supabase."
+    : params.status === "moved"
+      ? "Lote movido y registrado en historial."
+      : null;
+  const errorMessage = params.error
+    ? "No se pudo guardar en Supabase. Revisa que haya sesion activa y permisos para este rol."
+    : null;
+
+  let realLaundryBatches: typeof demoLaundryBatches = [];
+  let realLaundryMovements: typeof demoLaundryMovements = [];
+  let referenceApartments = demoApartments.map(({ id, name, code, address }) => ({ id, name, code, address }));
+  let referenceCleanings: Pick<Cleaning, "id" | "apartmentId" | "scheduledDate" | "status" | "cleaningType">[] = demoCleanings.map(({ id, apartmentId, scheduledDate, status, cleaningType }) => ({
+    id,
+    apartmentId,
+    scheduledDate,
+    status,
+    cleaningType: cleaningType ?? "checkout"
+  }));
+
+  try {
+    const supabase = await createClient();
+    const [batches, movements, references] = await Promise.all([
+      getLaundryBatches(supabase),
+      getLaundryMovements(supabase),
+      getLaundryReferenceData(supabase)
+    ]);
+
+    realLaundryBatches = batches;
+    realLaundryMovements = movements;
+    if (references.apartments.length) referenceApartments = references.apartments;
+    if (references.cleanings.length) referenceCleanings = references.cleanings;
+  } catch {
+    // The MVP keeps demo data visible when Supabase is not available.
+  }
+
+  const laundryBatches = realLaundryBatches.length ? realLaundryBatches : demoLaundryBatches;
+  const laundryMovements = realLaundryMovements.length ? realLaundryMovements : demoLaundryMovements;
+  const isConnectedToSupabase = realLaundryBatches.length > 0 || referenceApartments.some((apartment) => !apartment.id.startsWith("apt-"));
+
   return (
     <>
       <PageHeader
@@ -49,6 +103,17 @@ export default function LaundryPage() {
         description="Operacion de blancos sucios, lavanderia interna, bodega limpia, kits, bajas, costos y capacidad."
         action={<ButtonLink href="/blancos" variant="secondary">Ver Blancos</ButtonLink>}
       />
+
+      {statusMessage ? (
+        <div className="mb-4 rounded-md border border-emerald-200 bg-emerald-50 p-4 text-sm font-bold text-emerald-800">
+          {statusMessage}
+        </div>
+      ) : null}
+      {errorMessage ? (
+        <div className="mb-4 rounded-md border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-800">
+          {errorMessage}
+        </div>
+      ) : null}
 
       <nav className="mb-6 flex gap-2 overflow-x-auto pb-2">
         {nav.map(([label, href]) => (
@@ -113,7 +178,11 @@ export default function LaundryPage() {
       </section>
 
       <section id="recepcion" className="mt-6">
-        <LaundryReceptionForm />
+        <LaundryReceptionForm
+          apartments={referenceApartments}
+          cleanings={referenceCleanings}
+          isConnectedToSupabase={isConnectedToSupabase}
+        />
       </section>
 
       <section className="mt-6">
@@ -152,7 +221,7 @@ export default function LaundryPage() {
       <section id="proceso" className="mt-6">
         <Card>
           <CardTitle title="Proceso tipo kanban" description="Mueve lotes por clasificacion, lavado, secado, inspeccion, bodega u observados." />
-          <LaundryProcessKanban batches={laundryBatches} />
+          <LaundryProcessKanban batches={laundryBatches} canMove={realLaundryBatches.length > 0} />
         </Card>
       </section>
 

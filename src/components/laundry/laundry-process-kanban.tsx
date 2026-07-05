@@ -1,6 +1,8 @@
 import { ArrowRight } from "lucide-react";
+import { moveLaundryBatchAction } from "@/app/(app)/lavanderia/actions";
 import { LaundryStatusBadge } from "@/components/laundry/laundry-status-badge";
 import { Button } from "@/components/ui/button";
+import { nextLaundryStep } from "@/lib/laundry/supabase-laundry";
 import type { LaundryBatch, LaundryStatus } from "@/types";
 
 const columns: LaundryStatus[] = [
@@ -15,7 +17,7 @@ const columns: LaundryStatus[] = [
   "Baja"
 ];
 
-export function LaundryProcessKanban({ batches }: { batches: LaundryBatch[] }) {
+export function LaundryProcessKanban({ batches, canMove = false }: { batches: LaundryBatch[]; canMove?: boolean }) {
   return (
     <div className="grid gap-4 overflow-x-auto xl:grid-cols-3 2xl:grid-cols-5">
       {columns.map((column) => {
@@ -37,10 +39,21 @@ export function LaundryProcessKanban({ batches }: { batches: LaundryBatch[] }) {
                     <p className="mt-2 text-sm font-semibold text-slate-500">
                       {batch.pesoKg} kg - {batch.piezasRecibidas} piezas
                     </p>
-                    <Button type="button" variant="secondary" className="mt-3 w-full text-sm">
-                      Mover siguiente
-                      <ArrowRight className="h-4 w-4" />
-                    </Button>
+                    {canMove && nextLaundryStep[batch.estado] ? (
+                      <form action={moveLaundryBatchAction}>
+                        <input type="hidden" name="batch_id" value={batch.id} />
+                        <input type="hidden" name="current_status" value={batch.estado} />
+                        <Button type="submit" variant="secondary" className="mt-3 w-full text-sm">
+                          Mover siguiente
+                          <ArrowRight className="h-4 w-4" />
+                        </Button>
+                      </form>
+                    ) : (
+                      <Button type="button" variant="secondary" className="mt-3 w-full text-sm" disabled>
+                        Mover siguiente
+                        <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    )}
                   </article>
                 ))
               )}
