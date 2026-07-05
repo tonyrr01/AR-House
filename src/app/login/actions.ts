@@ -47,9 +47,11 @@ export async function signUpAction(formData: FormData) {
   const fullName = getString(formData, "full_name");
   const email = getString(formData, "email");
   const password = getString(formData, "password");
+  const passwordConfirm = getString(formData, "password_confirm");
   const role = (getString(formData, "role") || "limpieza") as UserRole;
 
-  if (!fullName || !email || !password) redirect("/login?error=missing");
+  if (!fullName || !email || !password || !passwordConfirm) redirect("/login?error=missing");
+  if (password !== passwordConfirm) redirect("/login?error=password-match");
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({

@@ -7,6 +7,7 @@ import { Field, Input, Select } from "@/components/ui/field";
 const messages: Record<string, string> = {
   missing: "Completa todos los campos obligatorios.",
   invalid: "Correo o contrasena incorrectos.",
+  "password-match": "Las contrasenas no coinciden.",
   signup: "No se pudo crear el usuario. Revisa el correo o contrasena.",
   created: "Usuario creado. Ya puedes iniciar sesion."
 };
@@ -77,6 +78,9 @@ export default async function LoginPage({
               </Field>
               <Field label="Contrasena">
                 <Input name="password" type="password" autoComplete="new-password" minLength={6} required />
+              </Field>
+              <Field label="Confirmar contrasena">
+                <Input name="password_confirm" type="password" autoComplete="new-password" minLength={6} required />
               </Field>
               <Field label="Rol">
                 <Select name="role" defaultValue="limpieza">
