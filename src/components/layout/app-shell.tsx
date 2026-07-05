@@ -12,6 +12,8 @@ import {
   Wrench
 } from "lucide-react";
 import Link from "next/link";
+import { signOutAction } from "@/app/login/actions";
+import type { UserRole } from "@/types";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: Home },
@@ -27,7 +29,17 @@ const navItems = [
   { href: "/reportes/limpieza", label: "Reporte", icon: BarChart3 }
 ];
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({
+  children,
+  user
+}: {
+  children: React.ReactNode;
+  user: {
+    email: string;
+    fullName: string;
+    role: UserRole;
+  };
+}) {
   return (
     <div className="min-h-screen bg-[#f6f8f7]">
       <aside className="fixed inset-y-0 left-0 hidden w-72 border-r border-slate-200 bg-white px-4 py-6 lg:block">
@@ -56,8 +68,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-sea sm:text-xs">MVP operativo</p>
               <p className="text-base font-bold text-ink sm:text-lg">Turno de limpieza</p>
             </div>
-            <div className="flex min-h-10 items-center gap-2 rounded-md border border-slate-200 bg-mist px-3 py-2 text-sm font-bold text-pine sm:min-h-11 sm:px-4">
-              Rol demo: supervisor
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="min-h-10 rounded-md border border-slate-200 bg-mist px-3 py-2 text-sm font-bold text-pine sm:min-h-11 sm:px-4">
+                <span className="block leading-tight">{user.fullName}</span>
+                <span className="block text-xs font-semibold text-pine/70">{user.role}</span>
+              </div>
+              <form action={signOutAction}>
+                <button className="tap-target rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50">
+                  Salir
+                </button>
+              </form>
             </div>
           </div>
           <nav className="mt-3 flex gap-2 overflow-x-auto pb-1 lg:hidden">
