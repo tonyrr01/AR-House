@@ -16,6 +16,9 @@ import { WorkOrderTable } from "@/components/maintenance/work-order-table";
 import { PageHeader } from "@/components/page-header";
 import { ButtonLink } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
+import { getMaintenanceReferenceData, getMaintenanceTickets } from "@/lib/maintenance/supabase-maintenance";
+import { createClient } from "@/lib/supabase/server";
+import type { Apartment, MaintenanceAssetTicket } from "@/types";
 import {
   maintenanceAssetTickets,
   maintenanceCosts,
@@ -40,8 +43,48 @@ const nav = [
   ["Reportes", "#reportes"]
 ];
 
-export default function MaintenancePage() {
-  const urgentTickets = maintenanceAssetTickets.filter((ticket) => ticket.priority === "Urgente");
+export const dynamic = "force-dynamic";
+
+const messages: Record<string, string> = {
+  "ticket-created": "Ticket creado en Supabase.",
+  "stock-updated": "Refaccion descontada del stock real.",
+  missing: "Falta departamento o descripcion.",
+  "guest-charge": "Para sugerir cargo al huesped agrega costo estimado.",
+  "urgent-date": "Los tickets urgentes necesitan fecha compromiso.",
+  save: "No se pudo guardar el ticket. Revisa permisos y tablas de Supabase.",
+  stock: "No hay stock suficiente para esa refaccion.",
+  material: "Faltan datos para registrar material.",
+  "material-save": "Se desconto stock, pero no se pudo guardar el material usado."
+};
+
+export default async function MaintenancePage({
+  searchParams
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = searchParams ? await searchParams : {};
+  const statusKey = String(params.status ?? "");
+  const errorKey = String(params.error ?? "");
+  const statusMessage = messages[statusKey];
+  const errorMessage = messages[errorKey];
+
+  let realTickets: MaintenanceAssetTicket[] = [];
+  let realApartments: Pick<Apartment, "id" | "name" | "code" | "address">[] = [];
+
+  try {
+    const supabase = await createClient();
+    const [tickets, references] = await Promise.all([
+      getMaintenanceTickets(supabase),
+      getMaintenanceReferenceData(supabase)
+    ]);
+    realTickets = tickets;
+    realApartments = references.apartments;
+  } catch {
+    // Keep the module usable with mock data while Supabase is unavailable.
+  }
+
+  const tickets = realTickets.length ? realTickets : maintenanceAssetTickets;
+  const urgentTickets = tickets.filter((ticket) => ticket.priority === "Urgente");
   const criticalParts = spareParts.filter((part) => part.status === "critico" || part.stockActual <= part.stockMinimo);
 
   return (
@@ -51,6 +94,17 @@ export default function MaintenancePage() {
         description="Operacion separada para tickets, ordenes, preventivos, activos tecnicos, refacciones, costos y reportes."
         action={<ButtonLink href="/tickets" variant="secondary">Tickets anteriores</ButtonLink>}
       />
+
+      {statusMessage ? (
+        <div className="mb-4 rounded-md border border-emerald-200 bg-emerald-50 p-4 text-sm font-bold text-emerald-800">
+          {statusMessage}
+        </div>
+      ) : null}
+      {errorMessage ? (
+        <div className="mb-4 rounded-md border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-800">
+          {errorMessage}
+        </div>
+      ) : null}
 
       <nav className="mb-6 flex gap-2 overflow-x-auto pb-2">
         {nav.map(([label, href]) => (
@@ -62,7 +116,7 @@ export default function MaintenancePage() {
 
       <section id="dashboard">
         <MaintenanceDashboardCards
-          tickets={maintenanceAssetTickets}
+          tickets={tickets}
           orders={workOrders}
           preventives={preventiveMaintenancePlans}
           spareParts={spareParts}
@@ -119,19 +173,23 @@ export default function MaintenancePage() {
       </section>
 
       <section id="tickets" className="mt-6 grid gap-6 xl:grid-cols-[420px_1fr]">
-        <MaintenanceTicketForm />
+        <MaintenanceTicketForm
+          apartments={realApartments}
+          sourceModule={String(params.sourceModule ?? "manual")}
+          sourceId={typeof params.sourceId === "string" ? params.sourceId : undefined}
+        />
         <Card className="p-0">
           <div className="border-b border-slate-200 p-5">
             <CardTitle title="Tickets" description="Tabla con filtros mock por departamento, categoria, prioridad, estado y tecnico." />
           </div>
-          <MaintenanceTicketTable tickets={maintenanceAssetTickets} />
+          <MaintenanceTicketTable tickets={tickets} />
         </Card>
       </section>
 
       <section className="mt-6">
         <Card>
           <CardTitle title="Kanban de tickets" description="Vista para supervisor y tecnicos en tablet." />
-          <MaintenanceTicketKanban tickets={maintenanceAssetTickets} />
+          <MaintenanceTicketKanban tickets={tickets} />
         </Card>
       </section>
 
@@ -192,7 +250,7 @@ export default function MaintenancePage() {
               <MaintenanceReportCard
                 key={property.id}
                 propertyName={property.name}
-                tickets={maintenanceAssetTickets}
+                tickets={tickets}
                 costs={maintenanceCosts}
                 visits={preventiveMaintenanceVisits}
               />

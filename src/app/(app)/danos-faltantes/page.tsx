@@ -42,7 +42,7 @@ export default function DamagesPage() {
               <p className="mt-5 rounded-md bg-slate-50 p-3 text-sm font-semibold text-slate-600">
                 {report.apartmentName} · {report.photoCount} foto(s) · {report.createdAt}
               </p>
-              <ButtonLink href="/mantenimiento#tickets" variant="secondary" className="mt-4 w-full justify-center sm:w-auto">
+              <ButtonLink href={`/mantenimiento?sourceModule=danos_faltantes&sourceId=${report.id}#tickets`} variant="secondary" className="mt-4 w-full justify-center sm:w-auto">
                 <Wrench className="h-5 w-5" />
                 Enviar a mantenimiento
               </ButtonLink>
