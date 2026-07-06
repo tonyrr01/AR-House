@@ -1,17 +1,58 @@
 import { Bath, BedDouble, Building2, MapPin } from "lucide-react";
+import { createApartmentAction } from "@/app/(app)/departamentos/actions";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Field, Input, Select } from "@/components/ui/field";
-import { apartments } from "@/lib/demo-data";
+import { apartments as demoApartments } from "@/lib/demo-data";
+import { getApartments } from "@/lib/apartments/supabase-apartments";
+import { createClient } from "@/lib/supabase/server";
+import type { Apartment } from "@/types";
 
-export default function ApartmentsPage() {
+const messages: Record<string, string> = {
+  created: "Departamento guardado en Supabase.",
+  missing: "Falta nombre, codigo o direccion.",
+  save: "No se pudo guardar. Revisa permisos de Supabase para tu rol."
+};
+
+export const dynamic = "force-dynamic";
+
+export default async function ApartmentsPage({
+  searchParams
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = searchParams ? await searchParams : {};
+  const statusMessage = messages[String(params.status ?? "")];
+  const errorMessage = messages[String(params.error ?? "")];
+
+  let realApartments: Apartment[] = [];
+
+  try {
+    const supabase = await createClient();
+    realApartments = await getApartments(supabase);
+  } catch {
+    // Keep demo apartments visible while Supabase is unavailable.
+  }
+
+  const apartments = realApartments.length ? realApartments : demoApartments;
+
   return (
     <>
       <PageHeader
         title="Departamentos"
         description="Unidades activas para programar limpiezas, revisar inventario y conservar historial operativo."
       />
+      {statusMessage ? (
+        <div className="mb-4 rounded-md border border-emerald-200 bg-emerald-50 p-4 text-sm font-bold text-emerald-800">
+          {statusMessage}
+        </div>
+      ) : null}
+      {errorMessage ? (
+        <div className="mb-4 rounded-md border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-800">
+          {errorMessage}
+        </div>
+      ) : null}
       <div className="grid gap-6">
         <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
           {apartments.map((apartment) => (
@@ -72,46 +113,43 @@ export default function ApartmentsPage() {
             </div>
             <span className="rounded-md bg-mist px-3 py-1.5 text-sm font-bold text-pine">MVP</span>
           </div>
-          <form className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <form action={createApartmentAction} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <Field label="Nombre">
-              <Input placeholder="Roma Norte 203" className="min-h-12 py-2.5" />
+              <Input name="name" placeholder="Roma Norte 203" className="min-h-12 py-2.5" required />
             </Field>
             <Field label="Codigo interno">
-              <Input placeholder="RN-203" className="min-h-12 py-2.5" />
+              <Input name="code" placeholder="RN-203" className="min-h-12 py-2.5" required />
             </Field>
             <Field label="Direccion" className="md:col-span-2">
-              <Input placeholder="Calle, colonia, ciudad" className="min-h-12 py-2.5" />
+              <Input name="address" placeholder="Calle, colonia, ciudad" className="min-h-12 py-2.5" required />
             </Field>
             <Field label="Desarrollo">
-              <Input placeholder="Nombre del edificio" className="min-h-12 py-2.5" />
+              <Input name="development_name" placeholder="Nombre del edificio" className="min-h-12 py-2.5" />
             </Field>
             <Field label="Area m2">
-              <Input type="number" min="0" placeholder="82" className="min-h-12 py-2.5" />
+              <Input name="area_m2" type="number" min="0" placeholder="82" className="min-h-12 py-2.5" />
             </Field>
             <Field label="Mobiliario">
-              <Input placeholder="Premium, ejecutivo..." className="min-h-12 py-2.5" />
+              <Input name="furniture_type" placeholder="Premium, ejecutivo..." className="min-h-12 py-2.5" />
             </Field>
             <Field label="Decoracion">
-              <Input placeholder="Minimalista, natural..." className="min-h-12 py-2.5" />
-            </Field>
-            <Field label="Propietario">
-              <Input placeholder="Nombre del propietario" className="min-h-12 py-2.5" />
+              <Input name="decoration_type" placeholder="Minimalista, natural..." className="min-h-12 py-2.5" />
             </Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Camas">
-                <Input type="number" min="0" defaultValue="1" className="min-h-12 py-2.5" />
+                <Input name="beds" type="number" min="0" defaultValue="1" className="min-h-12 py-2.5" />
               </Field>
               <Field label="Banos">
-                <Input type="number" min="0" defaultValue="1" className="min-h-12 py-2.5" />
+                <Input name="baths" type="number" min="0" defaultValue="1" className="min-h-12 py-2.5" />
               </Field>
             </div>
             <Field label="Estado">
-              <Select defaultValue="activo" className="min-h-12 py-2.5">
+              <Select name="status" defaultValue="activo" className="min-h-12 py-2.5">
                 <option value="activo">Activo</option>
                 <option value="pausado">Pausado</option>
               </Select>
             </Field>
-            <Button type="button" className="w-full md:col-span-2 xl:col-span-1 xl:self-end">Guardar unidad</Button>
+            <Button type="submit" className="w-full md:col-span-2 xl:col-span-1 xl:self-end">Guardar unidad</Button>
           </form>
         </Card>
       </div>
